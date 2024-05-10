@@ -1,0 +1,12 @@
+#Lifecyle
+party:
+  #派对类别
+  test:
+    #开始游戏的人数
+    StartAmount: 2
+    #倒计时的时间
+    StartSecond: 60
+    #加速倒计时的人数
+    AccelerateAmount: 3
+    #加速到几秒
+    AccelerateSecond: 10

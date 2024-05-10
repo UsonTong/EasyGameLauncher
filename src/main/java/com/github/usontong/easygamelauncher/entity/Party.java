@@ -7,7 +7,24 @@ import java.util.ArrayList;
 
 public class Party {
     private final ArrayList<Player> members = new ArrayList<>();
-    private final Timer timer = new Timer();
+
+    private final String name;//派对名字
+    private final PartyConfig config;//配置文件
+    private final StartTimer startTimer;
+
+    public PartyConfig getConfig() {
+        return config;
+    }
+
+    public StartTimer getTimer() {
+        return startTimer;
+    }
+
+    public Party(String name, PartyConfig config) {
+        this.name = name;
+        this.config = config;
+        startTimer = new StartTimer(config, name);
+    }
 
     public int getAmount() {
         return members.size();
@@ -32,15 +49,15 @@ public class Party {
     }
 
     public void start() {
-        timer.start();
+        startTimer.start();
     }
 
     public void stop() {
-        timer.stop();
+        startTimer.stop();
     }
 
     public void accelerate() {
-        timer.accelerate();
+        startTimer.accelerate();
     }
 
 

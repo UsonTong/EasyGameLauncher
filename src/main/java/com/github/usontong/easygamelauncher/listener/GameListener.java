@@ -1,7 +1,8 @@
 package com.github.usontong.easygamelauncher.listener;
 
-import com.github.usontong.easygamelauncher.EasyGameLauncher;
 import com.github.usontong.easygamelauncher.api.MessageSender;
+import com.github.usontong.easygamelauncher.entity.Party;
+import com.github.usontong.easygamelauncher.entity.StartTimer;
 import com.github.usontong.easygamelauncher.event.GameStartEvent;
 import com.github.usontong.easygamelauncher.event.JoinPartyEvent;
 import com.github.usontong.easygamelauncher.event.LeavePartyEvent;
@@ -11,8 +12,10 @@ import org.bukkit.event.Listener;
 public class GameListener implements Listener {
     @EventHandler
     public void onGameStart(GameStartEvent event) {
-        if (EasyGameLauncher.PARTY.getAmount() < EasyGameLauncher.START_SECOND) {
-            EasyGameLauncher.PARTY.stop();
+        Party party = event.getParty();
+        //做一次验证
+        if (party.getAmount() < party.getConfig().getStartAmount()) {
+            party.stop();
         }
 
         MessageSender.sendAll("游戏开始！");
@@ -27,11 +30,12 @@ public class GameListener implements Listener {
      */
     @EventHandler
     public void onJoinParty(JoinPartyEvent event) {
-        if (EasyGameLauncher.PARTY.getAmount() >= EasyGameLauncher.START_AMOUNT) {
-            EasyGameLauncher.PARTY.start();
+        Party party = event.getParty();
+        if (party.getAmount() >= party.getConfig().getStartAmount()) {
+            party.start();
         }
-        if (EasyGameLauncher.PARTY.getAmount() >= EasyGameLauncher.ACCELERATE_AMOUNT) {
-            EasyGameLauncher.PARTY.accelerate();
+        if (party.getAmount() >= party.getConfig().getAccelerateAmount()) {
+            party.accelerate();
         }
 
         MessageSender.sendAll(event.getPlayer().getName() + " 加入游戏！");
@@ -39,8 +43,11 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onLeaveParty(LeavePartyEvent event) {
-        if (EasyGameLauncher.PARTY.getAmount() < EasyGameLauncher.START_SECOND) {
-            EasyGameLauncher.PARTY.stop();
+        Party party = event.getParty();
+        StartTimer startTimer = party.getTimer();
+        MessageSender.sendAll(party.getConfig().getStartAmount() +"<" + startTimer.getSecond());
+        if (party.getAmount() < party.getConfig().getStartAmount()) {
+            party.stop();
         }
 
         MessageSender.sendAll(event.getPlayer().getName() + " 退出游戏！");
