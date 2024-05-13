@@ -1,5 +1,5 @@
-#Lifecyle
-party:
+#Lifecyle create->join->start->out->end
+Party:
   #派对类别
   test:
     #开始游戏的人数
@@ -10,3 +10,22 @@ party:
     AccelerateAmount: 3
     #加速到几秒
     AccelerateSecond: 10
+    #留下一个人时结束游戏
+    LeaveAmount: 1
+    #触发器
+    Trigger:
+      #在触发时只会调用一次
+      Once:
+        GameStartEvent:
+          #target 会对哪些目标生效
+          #Self 自己
+          #NonSelf 除了自己外所有人
+          #All 所有人
+          Target: Self
+          #skill 填技能组即刻
+          Skill: SendMessage
+      #在触发时会调用指定tick
+      Timer:
+        GameStartEvent:
+          Target: All
+          Skill: TimerMessage

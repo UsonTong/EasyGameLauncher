@@ -2,10 +2,12 @@ package com.github.usontong.easygamelauncher.command;
 
 import com.github.usontong.easygamelauncher.EasyGameLauncher;
 import com.github.usontong.easygamelauncher.api.MessageSender;
-import com.github.usontong.easygamelauncher.api.PartyAPI;
+import com.github.usontong.easygamelauncher.entity.Lifecycle;
 import com.github.usontong.easygamelauncher.entity.Party;
 import com.github.usontong.easygamelauncher.event.JoinPartyEvent;
 import com.github.usontong.easygamelauncher.event.LeavePartyEvent;
+import com.github.usontong.easygamelauncher.event.PartyCreateEvent;
+import com.github.usontong.easygamelauncher.event.PlayerOutEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,16 +39,26 @@ public class Command implements CommandExecutor {
                 }
 
                 String party_name = strings[1];
-                Party party = PartyAPI.getPartyByPartyName(party_name);
+
+
+                //验证玩家是否能正确进入派对
+                //派对名不存在时
+                Party party = Party.getPartyByPartyName(party_name);
                 if (party == null) {
                     MessageSender.sendMessage(commandSender, "派对不存在");
                     return true;
                 }
+                //玩家已经在派对时
+                if (EasyGameLauncher.playerInParty.containsKey(player)) {
+                    MessageSender.sendMessage(commandSender, "已加入一个派对，无法加入更多派对");
+                    return true;
+                }
 
-                //添加玩家到party
+                //将玩家添加到派对
                 if (party.addMember(player)) {
                     //呼叫玩家加入派对事件
                     Bukkit.getPluginManager().callEvent(new JoinPartyEvent(player, party));
+                    EasyGameLauncher.playerInParty.put(player, party);
                     return true;
                 } else  {
                     MessageSender.sendMessage(player, "已加入游戏！");
@@ -58,7 +70,7 @@ public class Command implements CommandExecutor {
                 }
 
                 String party_name = strings[1];
-                Party party = PartyAPI.getPartyByPartyName(party_name);
+                Party party = Party.getPartyByPartyName(party_name);
                 if (party == null) {
                     MessageSender.sendMessage(commandSender, "派对不存在");
                     return true;
@@ -72,9 +84,31 @@ public class Command implements CommandExecutor {
                 } else {
                     MessageSender.sendMessage(player, "未加入游戏！");
                 }
+            } else if (parameter1.equalsIgnoreCase("out")) {
+                //玩家不在游戏内
+                if (!EasyGameLauncher.playerInParty.containsKey(player)) {
+                    MessageSender.sendMessage(player, "未加入任何派对");
+                    return true;
+                }
+                Party party = EasyGameLauncher.playerInParty.get(player);
+
+                //生命周期还没有进入能够淘汰的时候
+                if (party.getLifecycle_() < (Lifecycle.OUT)) {
+                    MessageSender.sendMessage(commandSender, "游戏还没开始");
+                    return true;
+                }
+                //玩家不在场上
+                //!party.getPresentMembers().contains(player) 玩家就被淘汰了
+                if (!party.getPresentMembers().contains(player)) {
+                    MessageSender.sendMessage(commandSender, "玩家已被淘汰");
+                    return true;
+                }
+
+
+                party.getPresentMembers().remove(player);
+                Bukkit.getPluginManager().callEvent(new PlayerOutEvent(party, player));
+                return true;
             }
-        } else {
-            MessageSender.sendMessage(commandSender, "只有玩家能这么做！");
         }
 
         //create party_type party_name
@@ -86,12 +120,14 @@ public class Command implements CommandExecutor {
 
             String party_type = strings[1];
             String party_name = strings[2];
+
             if (EasyGameLauncher.partyConfigs.containsKey(party_type)) {
                 if (!EasyGameLauncher.partyMap.containsKey(party_name)) {
                     Party party = new Party(party_name, EasyGameLauncher.partyConfigs.get(party_type));
 
                     //创建成功
                     EasyGameLauncher.partyMap.put(party_name, party);
+                    Bukkit.getPluginManager().callEvent(new PartyCreateEvent(party));
                     MessageSender.sendMessage(commandSender, "创建" + party_type + "，派对名为" + party_name);
                 } else {
                     MessageSender.sendMessage(commandSender, "派对名" + party_name + "已存在");

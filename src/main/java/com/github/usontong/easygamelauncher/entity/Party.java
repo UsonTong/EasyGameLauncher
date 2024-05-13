@@ -1,12 +1,31 @@
 package com.github.usontong.easygamelauncher.entity;
 
 
+import com.github.usontong.easygamelauncher.EasyGameLauncher;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
 public class Party {
-    private final ArrayList<Player> members = new ArrayList<>();
+    private int Lifecycle_ = Lifecycle.ERROR;
+    private final ArrayList<Player> allMembers = new ArrayList<>();
+    private final ArrayList<Player> presentMembers = new ArrayList<>();
+
+    public int getLifecycle_() {
+        return Lifecycle_;
+    }
+
+    public void setLifecycle_(int lifecycle_) {
+        Lifecycle_ = lifecycle_;
+    }
+
+    public ArrayList<Player> getPresentMembers() {
+        return presentMembers;
+    }
+
+    public ArrayList<Player> getAllMembers() {
+        return allMembers;
+    }
 
     private final String name;//派对名字
     private final PartyConfig config;//配置文件
@@ -26,13 +45,19 @@ public class Party {
         startTimer = new StartTimer(config, name);
     }
 
-    public int getAmount() {
-        return members.size();
+    //通过派对名获得派对对象
+    public static Party getPartyByPartyName(String party_name) {
+        return EasyGameLauncher.partyMap.getOrDefault(party_name, null);
     }
 
-        public boolean addMember(Player p) {
-        if (!members.contains(p)) {
-            members.add(p);
+
+    public int getAmount() {
+        return allMembers.size();
+    }
+
+    public boolean addMember(Player p) {
+        if (!allMembers.contains(p)) {
+            allMembers.add(p);
             return true;
         } else {
             return false;
@@ -40,8 +65,8 @@ public class Party {
     }
 
     public boolean removeMember(Player p) {
-        if (members.contains(p)) {
-            members.remove(p);
+        if (allMembers.contains(p)) {
+            allMembers.remove(p);
             return true;
         } else {
             return false;
@@ -60,5 +85,9 @@ public class Party {
         startTimer.accelerate();
     }
 
-
+    //处理派对结束
+    public void end() {
+        EasyGameLauncher.partyMap.remove(name);
+        allMembers.forEach(player -> EasyGameLauncher.playerInParty.remove(player));
+    }
 }

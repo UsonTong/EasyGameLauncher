@@ -2,8 +2,7 @@ package com.github.usontong.easygamelauncher.entity;
 
 import com.github.usontong.easygamelauncher.EasyGameLauncher;
 import com.github.usontong.easygamelauncher.api.MessageSender;
-import com.github.usontong.easygamelauncher.api.PartyAPI;
-import com.github.usontong.easygamelauncher.event.GameStartEvent;
+import com.github.usontong.easygamelauncher.event.PartyStartEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -62,7 +61,7 @@ public class StartTimer {
 
                 if (second <= 0) {
                     start = false;
-                    Bukkit.getPluginManager().callEvent(new GameStartEvent(PartyAPI.getPartyByPartyName(party_name)));
+                    Bukkit.getPluginManager().callEvent(new PartyStartEvent(Party.getPartyByPartyName(party_name)));
 
                     //倒计时结束
                     stop = true;

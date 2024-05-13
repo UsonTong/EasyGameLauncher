@@ -7,6 +7,33 @@ public class PartyConfig {
     private final int accelerateAmount;
     private final int accelerateSecond;
 
+    @Override
+    public String toString() {
+        return "PartyConfig{" +
+                "partyType='" + partyType + '\'' +
+                ", startAmount=" + startAmount +
+                ", startSecond=" + startSecond +
+                ", accelerateAmount=" + accelerateAmount +
+                ", accelerateSecond=" + accelerateSecond +
+                ", leaveAmount=" + leaveAmount +
+                '}';
+    }
+
+    public int getLeaveAmount() {
+        return leaveAmount;
+    }
+
+    public PartyConfig(String partyType, int startAmount, int startSecond, int accelerateAmount, int accelerateSecond, int leaveAmount) {
+        this.partyType = partyType;
+        this.startAmount = startAmount;
+        this.startSecond = startSecond;
+        this.accelerateAmount = accelerateAmount;
+        this.accelerateSecond = accelerateSecond;
+        this.leaveAmount = leaveAmount;
+    }
+
+    private final int leaveAmount;
+
     public String getPartyType() {
         return partyType;
     }
@@ -25,24 +52,5 @@ public class PartyConfig {
 
     public int getAccelerateSecond() {
         return accelerateSecond;
-    }
-
-    public PartyConfig(String partyType, int startAmount, int startSecond, int accelerateAmount, int accelerateSecond) {
-        this.partyType = partyType;
-        this.startAmount = startAmount;
-        this.startSecond = startSecond;
-        this.accelerateAmount = accelerateAmount;
-        this.accelerateSecond = accelerateSecond;
-    }
-
-    @Override
-    public String toString() {
-        return "PartyConfig{" +
-                "partyType='" + partyType + '\'' +
-                ", startAmount=" + startAmount +
-                ", startSecond=" + startSecond +
-                ", accelerateAmount=" + accelerateAmount +
-                ", accelerateSecond=" + accelerateSecond +
-                '}';
     }
 }
