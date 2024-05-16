@@ -1,11 +1,19 @@
 package com.github.usontong.easygamelauncher.entity;
 
+import java.util.HashMap;
+
 public class PartyConfig {
     private final String partyType;
     private final int startAmount;
     private final int startSecond;
     private final int accelerateAmount;
     private final int accelerateSecond;
+    private final HashMap<String, PlayerTrigger> playerTriggerHashMap = new HashMap<>();
+    private final HashMap<String, PartyTrigger> partyTriggerHashMap = new HashMap<>();
+
+    public HashMap<String, PlayerTrigger> getPlayerTriggerHashMap() {
+        return playerTriggerHashMap;
+    }
 
     @Override
     public String toString() {
@@ -15,6 +23,8 @@ public class PartyConfig {
                 ", startSecond=" + startSecond +
                 ", accelerateAmount=" + accelerateAmount +
                 ", accelerateSecond=" + accelerateSecond +
+                ", playerTriggerHashMap=" + playerTriggerHashMap +
+                ", partyTriggerHashMap=" + partyTriggerHashMap +
                 ", leaveAmount=" + leaveAmount +
                 '}';
     }
@@ -52,5 +62,9 @@ public class PartyConfig {
 
     public int getAccelerateSecond() {
         return accelerateSecond;
+    }
+
+    public HashMap<String, PartyTrigger> getPartyTriggerHashMap() {
+        return partyTriggerHashMap;
     }
 }

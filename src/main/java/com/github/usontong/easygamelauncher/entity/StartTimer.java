@@ -1,8 +1,7 @@
 package com.github.usontong.easygamelauncher.entity;
 
 import com.github.usontong.easygamelauncher.EasyGameLauncher;
-import com.github.usontong.easygamelauncher.api.MessageSender;
-import com.github.usontong.easygamelauncher.event.PartyStartEvent;
+import com.github.usontong.easygamelauncher.event.party.PartyStartEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -66,8 +65,6 @@ public class StartTimer {
                     //倒计时结束
                     stop = true;
                 }
-
-                MessageSender.sendAll(partyConfig.getPartyType() + "-" + party_name + "-" + second);
             }
         }.runTaskTimer(EasyGameLauncher.instance, 20, 20);
     }

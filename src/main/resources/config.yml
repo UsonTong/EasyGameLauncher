@@ -14,18 +14,21 @@ Party:
     LeaveAmount: 1
     #触发器
     Trigger:
-      #在触发时只会调用一次
-      Once:
-        GameStartEvent:
-          #target 会对哪些目标生效
-          #Self 自己
-          #NonSelf 除了自己外所有人
-          #All 所有人
-          Target: Self
-          #skill 填技能组即刻
-          Skill: SendMessage
-      #在触发时会调用指定tick
-      Timer:
-        GameStartEvent:
-          Target: All
-          Skill: TimerMessage
+      PlayerJoinPartyEvent:
+        NONSELF: 有人加入了游戏
+        SELF: 你加入了游戏
+      PlayerLeavePartyEvent:
+        NONSELF: 有人退出了游戏
+        SELF: 你退出了游戏
+      PartyStartEvent:
+        ALL: 游戏开始
+      PlayerOutEvent:
+        SELF: 你被淘汰了
+        NONSELF: 有人被淘汰了
+      PartyEndEvent:
+        ALL: 游戏结束
+#    Reward:
+#      Winner: 胜者奖励
+#      30%: 前百分之30奖励
+#      50%: 前百分之30奖励
+#      100%: 参与奖励

@@ -1,25 +1,19 @@
-package com.github.usontong.easygamelauncher.event;
+package com.github.usontong.easygamelauncher.event.party;
 
 import com.github.usontong.easygamelauncher.entity.Party;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import com.github.usontong.easygamelauncher.event.superclass.PartyEvent;
 import org.bukkit.event.HandlerList;
 
-public class PlayerOutEvent extends Event  {
+public class PartyStartEvent extends PartyEvent {
     private static final HandlerList handlers = new HandlerList();
     private final Party party;
-    private final Player player;
-
-    public PlayerOutEvent(Party party, Player player) {
-        this.party = party;
-        this.player = player;
-    }
 
     public Party getParty() {
         return party;
     }
-    public Player getPlayer() {
-        return player;
+
+    public PartyStartEvent(Party party) {
+        this.party = party;
     }
 
     public HandlerList getHandlers() {

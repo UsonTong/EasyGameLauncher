@@ -2,40 +2,49 @@ package com.github.usontong.easygamelauncher.listener;
 
 import com.github.usontong.easygamelauncher.EasyGameLauncher;
 import com.github.usontong.easygamelauncher.api.MessageSender;
-import com.github.usontong.easygamelauncher.entity.Lifecycle;
-import com.github.usontong.easygamelauncher.entity.Party;
-import com.github.usontong.easygamelauncher.entity.StartTimer;
-import com.github.usontong.easygamelauncher.event.*;
+import com.github.usontong.easygamelauncher.api.MythicMobsAPI;
+import com.github.usontong.easygamelauncher.entity.*;
+import com.github.usontong.easygamelauncher.event.party.PartyCreateEvent;
+import com.github.usontong.easygamelauncher.event.party.PartyEndEvent;
+import com.github.usontong.easygamelauncher.event.party.PartyStartEvent;
+import com.github.usontong.easygamelauncher.event.player.PlayerJoinPartyEvent;
+import com.github.usontong.easygamelauncher.event.player.PlayerLeavePartyEvent;
+import com.github.usontong.easygamelauncher.event.player.PlayerOutEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class GameListener implements Listener {
+
     @EventHandler
     public void onPartyCreate(PartyCreateEvent event) {
         event.getParty().setLifecycle_(Lifecycle.CREATE);//进入到下一个生命周期
+
+        MythicMobsAPI.partySkill(event);
     }
 
     @EventHandler
     public void onPartyEnd(PartyEndEvent event) {
         event.getParty().setLifecycle_(Lifecycle.END);
 
-        MessageSender.sendAll("游戏结束！");
         event.getParty().end();
+
+        MythicMobsAPI.partySkill(event);
     }
 
     @EventHandler
     public void onPlayerOut(PlayerOutEvent event) {
-        MessageSender.sendAll(event.getPlayer().getName() + "出局");
-
         Party party = event.getParty();
         if (party.getPresentMembers().size() <= party.getConfig().getLeaveAmount()) {
             Bukkit.getPluginManager().callEvent(new PartyEndEvent(party));
+            return;
         }
+
+        MythicMobsAPI.playerSkill(event);
     }
 
     @EventHandler
-    public void onGameStart(PartyStartEvent event) {
+    public void onPartyStart(PartyStartEvent event) {
         event.getParty().setLifecycle_(Lifecycle.START);//进入到下一个生命周期
 
         Party party = event.getParty();
@@ -47,8 +56,9 @@ public class GameListener implements Listener {
 
         //初始化场上所有人
         party.getPresentMembers().addAll(party.getAllMembers());
-        MessageSender.sendAll("游戏开始！");
         event.getParty().setLifecycle_(Lifecycle.OUT);//进入到下一个生命周期
+
+        MythicMobsAPI.partySkill(event);
     }
 
 
@@ -59,7 +69,7 @@ public class GameListener implements Listener {
      * 加速到 ACCELERATE_SECOND
      */
     @EventHandler
-    public void onJoinParty(JoinPartyEvent event) {
+    public void onPlayerJoinParty(PlayerJoinPartyEvent event) {
         event.getParty().setLifecycle_(Lifecycle.JOIN);//进入到下一个生命周期
 
         Party party = event.getParty();
@@ -70,11 +80,11 @@ public class GameListener implements Listener {
             party.accelerate();
         }
 
-        MessageSender.sendAll(event.getPlayer().getName() + " 加入游戏！");
+        MythicMobsAPI.playerSkill(event);
     }
 
     @EventHandler
-    public void onLeaveParty(LeavePartyEvent event) {
+    public void onPlayerLeaveParty(PlayerLeavePartyEvent event) {
         Party party = event.getParty();
         EasyGameLauncher.playerInParty.remove(event.getPlayer());
         StartTimer startTimer = party.getTimer();
@@ -83,6 +93,6 @@ public class GameListener implements Listener {
             party.stop();
         }
 
-        MessageSender.sendAll(event.getPlayer().getName() + " 退出游戏！");
+        MythicMobsAPI.playerSkill(event);
     }
 }

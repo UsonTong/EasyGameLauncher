@@ -4,10 +4,10 @@ import com.github.usontong.easygamelauncher.EasyGameLauncher;
 import com.github.usontong.easygamelauncher.api.MessageSender;
 import com.github.usontong.easygamelauncher.entity.Lifecycle;
 import com.github.usontong.easygamelauncher.entity.Party;
-import com.github.usontong.easygamelauncher.event.JoinPartyEvent;
-import com.github.usontong.easygamelauncher.event.LeavePartyEvent;
-import com.github.usontong.easygamelauncher.event.PartyCreateEvent;
-import com.github.usontong.easygamelauncher.event.PlayerOutEvent;
+import com.github.usontong.easygamelauncher.event.player.PlayerJoinPartyEvent;
+import com.github.usontong.easygamelauncher.event.player.PlayerLeavePartyEvent;
+import com.github.usontong.easygamelauncher.event.party.PartyCreateEvent;
+import com.github.usontong.easygamelauncher.event.player.PlayerOutEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -57,7 +57,7 @@ public class Command implements CommandExecutor {
                 //将玩家添加到派对
                 if (party.addMember(player)) {
                     //呼叫玩家加入派对事件
-                    Bukkit.getPluginManager().callEvent(new JoinPartyEvent(player, party));
+                    Bukkit.getPluginManager().callEvent(new PlayerJoinPartyEvent(player, party));
                     EasyGameLauncher.playerInParty.put(player, party);
                     return true;
                 } else  {
@@ -79,7 +79,7 @@ public class Command implements CommandExecutor {
                 //添加玩家到party
                 if (party.removeMember(player)) {
                     //呼叫玩家加入派对事件
-                    Bukkit.getPluginManager().callEvent(new LeavePartyEvent(player, party));
+                    Bukkit.getPluginManager().callEvent(new PlayerLeavePartyEvent(player, party));
                     return true;
                 } else {
                     MessageSender.sendMessage(player, "未加入游戏！");

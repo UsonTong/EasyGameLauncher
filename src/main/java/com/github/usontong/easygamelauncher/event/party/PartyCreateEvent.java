@@ -1,10 +1,10 @@
-package com.github.usontong.easygamelauncher.event;
+package com.github.usontong.easygamelauncher.event.party;
 
 import com.github.usontong.easygamelauncher.entity.Party;
-import org.bukkit.event.Event;
+import com.github.usontong.easygamelauncher.event.superclass.PartyEvent;
 import org.bukkit.event.HandlerList;
 
-public class PartyCreateEvent extends Event {
+public class PartyCreateEvent extends PartyEvent {
     private static final HandlerList handlers = new HandlerList();
     private final Party party;
 
